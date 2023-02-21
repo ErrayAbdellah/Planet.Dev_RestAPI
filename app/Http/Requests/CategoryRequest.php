@@ -23,8 +23,15 @@ class CategoryRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        switch ($this->method()){
+            case 'POST': return [
+                // TODO implement this
+            ];
+            case 'PATCH':
+            case 'PUT' : return [
+                // TODO implement this...
+            ];
+            default : return [];
+        }
     }
 }

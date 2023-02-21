@@ -67,9 +67,9 @@ class ArticleController extends Controller
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function update(ArticleRequest $request, Article $article)
+    public function update(ArticleRequest $request, Article $article) // PUT PATCH
     {
-        //TO DO
+        $arrayValider = $request->validated();
     }
 
     /**

@@ -67,8 +67,7 @@ class AuthController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
-        // return response()->json(['success' => 'register successfully'], 200);
-        return $this->login();
+        return response()->json(['success' => 'register successfully'], 200);
     }
 
     /**
@@ -145,8 +144,6 @@ class AuthController extends Controller
             $message->text(
                 "please click on the link below to reset your password. \n
                 http://localhost:8000/api/password/reset?email=".$email."&token=".$token
-                // new TextPart("please click on the link below to reset your password. \n
-                //             http://localhost:8000/api/password/reset?email=".$email."&token=".$token)
                              );
         });
         
@@ -177,16 +174,5 @@ class AuthController extends Controller
         DB::table('password_resets')->where(['email'=> request('email')])->delete();
 
         return response()->json(['message'=>'Your password has been changed!']);
-    }
-
-    
-    public function test(){
-
-        return response()->json([
-            'email'=> request('email'),
-            'token'=> request('token'),
-            'password_confirmation'=> request('password_confirmation'),
-            'password'=> request('password'),
-        ]);
     }
 }

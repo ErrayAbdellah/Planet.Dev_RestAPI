@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Http\Requests\ArticleRequest;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ArticleController extends Controller
 {
@@ -31,11 +32,22 @@ class ArticleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\ArticleRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(ArticleRequest $request)
     {
-        //
+        $confident = $request->only(['title', 'content', 'description', 'category_id']);
+        $tags = $request->input('tags');
+
+        if(! $user = JWTAuth::user()) {
+            return response()->json(['error'=>'Unauthorized']);
+        }
+        $article = $user->articles()->create($confident);
+        $article->tags()->sync($tags);
+
+        return response()->json([
+            'message'=>'Article has been saved',
+        ], 201);
     }
 
     /**

@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -16,10 +20,6 @@ use App\Http\Controllers\CategoryController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::group([
 
     'middleware' => 'api',
@@ -32,15 +32,32 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
+    Route::apiResource('profile', UserController::class )->except(['index', 'store', ]);
 
 });
 
 Route::group([
 
     'middleware' => 'api',
-    'prefix' => 'auth'
+    'prefix' => 'password'
 
-], function ($router) {
-   Route::post('create',[CategoryController::class , 'create']);
+], function () {
+
+   Route::post('forget', [AuthController::class , 'forget']);
+   Route::post('reset', [AuthController::class , 'reset']);
+
 });
 
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'v1'
+
+], function () {
+
+    Route::apiResource('articles',  ArticleController::class );
+    Route::apiResource('categories',  CategoryController::class );
+    Route::apiResource('comments',  CommentController::class );
+    Route::apiResource('tags',  TagController::class );
+
+});

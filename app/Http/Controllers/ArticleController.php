@@ -46,7 +46,8 @@ class ArticleController extends Controller
         $article->tags()->sync($tags);
 
         return response()->json([
-            'message'=>'Article has been saved',
+            'success'=>'Article has been saved',
+            'data' => ['article' => $article]
         ], 201);
     }
 

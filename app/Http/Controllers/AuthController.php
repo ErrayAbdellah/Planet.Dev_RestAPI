@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -14,7 +19,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login','register','forgetPassword','resetPassword']]);
     }
 
     /**
@@ -26,11 +31,39 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
+    }
+
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register()
+    {   
+        request()->validate([
+                'name' => 'required',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6|confirmed',
+                'password_confirmation' => 'required|same:password',
+            ]);
+        
+        try {
+            $user = new User;
+            $user->name = request('name');
+            $user->email = request('email');
+            $user->password = Hash::make(request('password'));
+            $save = $user->save();
+                
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+        // return response()->json(['success' => 'register successfully'], 200);
+        return $this->login();
     }
 
     /**

@@ -32,6 +32,7 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
+    Route::post('test', [AuthController::class, 'test']);
     Route::apiResource('profile', UserController::class )->except(['index', 'store', ]);
 
 });

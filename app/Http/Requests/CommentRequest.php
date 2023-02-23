@@ -23,10 +23,11 @@ class CommentRequest extends FormRequest
      */
     public function rules()
     {
-
         switch ($this->method()){
             case 'POST': return [
-                // TODO implement this
+                'content' => 'required',
+                'user_id' => 'required|exists:users,id',
+                'article_id' => 'required|exists:articles,id'
             ];
             case 'PATCH':
             case 'PUT' : return [

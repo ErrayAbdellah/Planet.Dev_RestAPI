@@ -95,5 +95,11 @@ class TagController extends Controller
     public function destroy(Tag $tag)
     {
         //
+        $credentials = Tag::find($tag->id);
+        $categories = Tag::where('id', $tag->id)->delete($credentials);
+        if(!$categories){
+            return response()->json(['error'=>'not deleted']);
+        }
+        return response()->json(['message'=>'succsus'],200);
     }
 }

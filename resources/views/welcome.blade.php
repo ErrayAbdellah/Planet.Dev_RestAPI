@@ -7,6 +7,10 @@
     <title>Document</title>
 </head>
 <body>
-<h1>hey hamza !!</h1>
+<form action="" method="POST">
+    
+    <input type="text" name="title">
+    <input type="submit" value="click">
+</form>
 </body>
 </html>

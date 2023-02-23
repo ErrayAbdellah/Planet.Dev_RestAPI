@@ -8,6 +8,14 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ArticleController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware([
+            'isUser'
+        ])->only(['store']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,15 +26,6 @@ class ArticleController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -58,17 +57,6 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Article $article)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Article $article)
     {
         //
     }

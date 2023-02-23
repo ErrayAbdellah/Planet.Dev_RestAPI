@@ -36,11 +36,11 @@ class ArticleRequest extends FormRequest
             case 'PATCH':
                 case 'PUT' : return [
                     // TODO implement this...
-                    'name'=>'required',
+                    // 'name'=>'required',
                     'description'=>'required',
                     'content'=>'required',
                     'title'=>'required',
-                    'title'=>'required',
+                    // 'title'=>'required',
                     
                                 ];
             default : return [];

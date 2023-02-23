@@ -25,11 +25,11 @@ class CategoryRequest extends FormRequest
     {
         switch ($this->method()){
             case 'POST': return [
-                // TODO implement this
+                'name'=>'required',
             ];
             case 'PATCH':
             case 'PUT' : return [
-                // TODO implement this...
+                'name'=>'required',
             ];
             default : return [];
         }

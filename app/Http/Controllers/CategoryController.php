@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
+use Exception;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -35,7 +37,7 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        
+
         $credentials =['name'=>request('name')];
         $categories = Category::create(
             $credentials
@@ -66,6 +68,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         //
+
     }
 
     /**
@@ -77,7 +80,7 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
-        //
+       //
     }
 
     /**
@@ -88,6 +91,12 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $credentials = Category::find($category->id);
+        $categories = Category::where('id', $category->id)->delete($credentials);
+        if(!$categories){
+            return response()->json(['error'=>'not deleted']);
+        }
+        return response()->json(['message'=>'succsus'],200);
         //
     }
 }

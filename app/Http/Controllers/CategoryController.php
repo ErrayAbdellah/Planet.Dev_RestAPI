@@ -80,7 +80,14 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
-       //
+    $category->name = $request->get('name');
+
+    $category->update();
+
+    return response()->json([
+        'success'=>'Article has been update',
+        'data' => ['article' => $category]
+    ], 201);
     }
 
     /**

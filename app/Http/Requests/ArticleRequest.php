@@ -24,8 +24,15 @@ class ArticleRequest extends FormRequest
     public function rules()
     {
         switch ($this->method()){
-            case 'POST': return [
-            ];
+            case 'POST':
+                return [
+                    'title' => 'required|min:6',
+                    'content' => 'required|min:6',
+                    'description' => 'required|min:6',
+                    'category_id' => 'required|integer|exists:categories,id',
+                    'tags' => 'array',
+                    'tags.*' => 'integer|exists:tags,id',
+                ];
             case 'PATCH':
                 case 'PUT' : return [
                     // TODO implement this...

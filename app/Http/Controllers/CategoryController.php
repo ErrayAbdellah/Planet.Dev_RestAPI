@@ -24,7 +24,14 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        $credentials =['name'=>request('name')];
+        $categories = Category::create(
+            $credentials
+        );
+          if(!$categories){
+            return response()->json(['error'=>'not created']);
+          }
+          return response()->json(['message'=>'succsus'],200);
     }
 
     /**

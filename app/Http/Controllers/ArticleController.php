@@ -70,6 +70,7 @@ class ArticleController extends Controller
     public function update(ArticleRequest $request, Article $article) // PUT PATCH
     {
         $arrayValider = $request->validated();
+        
     }
 
     /**

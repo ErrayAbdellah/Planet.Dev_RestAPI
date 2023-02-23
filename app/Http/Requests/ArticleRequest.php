@@ -25,11 +25,16 @@ class ArticleRequest extends FormRequest
     {
         switch ($this->method()){
             case 'POST': return [
-                                    // TODO implement this
-                                ];
+            ];
             case 'PATCH':
-            case 'PUT' : return [
-                                    // TODO implement this...
+                case 'PUT' : return [
+                    // TODO implement this...
+                    'name'=>'required',
+                    'description'=>'required',
+                    'content'=>'required',
+                    'title'=>'required',
+                    'title'=>'required',
+                    
                                 ];
             default : return [];
         }

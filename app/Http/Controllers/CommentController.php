@@ -80,7 +80,12 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, Comment $comment)
     {
-        //
+        $comment->content = $request->content;
+        $comment->save();
+        return response()->json([
+            'message' => 'Comment updated successfully',
+            'comment' => $comment
+        ]);
     }
 
     /**
@@ -89,8 +94,14 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comment $comment)
+    public function destroy($id)
     {
-        //
+        $comment = Comment::find($id);
+        // $comment->id = $request->comment_id;
+
+        $comment->delete();
+        return response()->json([
+            'message' => 'Comment deleted'
+        ]);
     }
 }

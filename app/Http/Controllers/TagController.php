@@ -35,7 +35,14 @@ class TagController extends Controller
      */
     public function store(TagRequest $request)
     {
-        //
+        $tag =['name'=>request('name')];
+        $tag = Tag::create(
+            $tag
+        );
+          if(!$tag){
+            return response()->json(['error'=>'not created']);
+          }
+          return response()->json(['message'=>'success'],200);
     }
 
     /**

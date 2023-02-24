@@ -3,12 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Models\Article;
 use App\Http\Requests\CommentRequest;
-use Illuminate\Http\Request;
+use App\Policies\CommentPolicy;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CommentController extends Controller
 {
+    public function __construct()
+    {
+
+        $this->middleware([
+            'isUser'
+        ])->only(['store']);
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,9 +48,9 @@ class CommentController extends Controller
         $comment = new Comment;
         $comment->content = $request->content;
         $comment->article_id = $request->article_id;
-        $comment->user_id = $request->user_id; 
-        $comment->save();                                      
-        
+        $comment->user_id = $request->user_id;
+        $comment->save();
+
         return response()->json([
             'message' => 'Comment created successfully',
             'comment' => $comment,
@@ -80,6 +88,8 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, Comment $comment)
     {
+        $this->authorize('update', $comment);
+
         $comment->content = $request->content;
         $comment->save();
         return response()->json([
@@ -94,10 +104,9 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Comment $comment)
     {
-        $comment = Comment::find($id);
-        // $comment->id = $request->comment_id;
+        $this->authorize('delete', $comment);
 
         $comment->delete();
         return response()->json([

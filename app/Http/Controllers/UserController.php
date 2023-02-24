@@ -8,7 +8,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
-    
+
 /**
      * Create a new AuthController instance.
      *
@@ -17,6 +17,10 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login','register','forget','reset','test']]);
+
+        $this->middleware([
+            'isAdmin',
+        ])->only(['updateRole']);
     }
 
     /**
@@ -37,7 +41,7 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
         $data =[];
 
@@ -51,7 +55,7 @@ class UserController extends Controller
             $data['email']= $request->input('email');
         }
 
-        $user->id = JWTAuth::user()->id;
+        $user = JWTAuth::user();
 
          try {
             $user->where('id', $user->id)->update($data);
@@ -63,7 +67,7 @@ class UserController extends Controller
 
         return response()->json([
             'success'=>'user has been update',
-            'data' => ['user' => $user]
+            'data' => ['user' => User::find($user->id)]
         ], 201);
     }
 
@@ -76,5 +80,24 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    public function updateRole(Request $request, User $user)
+    {
+        $request->validate(['isAdmin'=>'required|boolean']);
+
+        try {
+            $user->update([
+                'isAdmin' => $request->isAdmin,
+            ]);
+        }catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error is occurred while updating the role.'
+            ], 500);
+        }
+
+        return response()->json([
+            'message' => 'role has been updated'
+        ], 202);
     }
 }

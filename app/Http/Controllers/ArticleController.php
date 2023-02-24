@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Http\Requests\ArticleRequest;
+use App\Policies\ArticlePolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Mockery\Generator\Method;
@@ -11,6 +12,16 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ArticleController extends Controller
 {
+
+    public function __construct()
+    {
+
+        $this->middleware([
+            'isUser'
+        ])->only(['store']);
+
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +29,7 @@ class ArticleController extends Controller
      */
     public function index(ArticleRequest $request)
     {
-        
+
         if(empty($request->name)){
             $articles =  DB::table('articles')
                 ->join('users', 'users.id', '=', 'articles.user_id')
@@ -44,29 +55,20 @@ class ArticleController extends Controller
                         'articles.description',
                         'articles.content',
                         'users.name as user',
-                        'categories.name as category',
-                        'tags.name as tags'
+                        'categories.name as category'
                     )
                 // ->groupBy($request->name)
                 ->where('categories.name','like','%'.$request->name.'%')
                 ->orWhere('tags.name','like','%'.$request->name.'%')
+                ->distinct()
                 ->get();
 
                 return response()->json($articles);
         }
-       
-    }
-    
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -103,18 +105,6 @@ class ArticleController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Article $article)
-    {
-        //
-        
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\ArticleRequest  $request
@@ -123,8 +113,8 @@ class ArticleController extends Controller
      */
     public function update(ArticleRequest $request, Article $article) // PUT PATCH
     {
+        $this->authorize('update', $article);
 
-        // return response()->json();
         $arrayValider = $request->validated();
         $tags = $request->input('tags');
 
@@ -136,8 +126,7 @@ class ArticleController extends Controller
         $article->content = $request->get('content');
         $article->description = $request->get('description');
         $article->title = $request->get('title');
-        $article->user_id = JWTAuth::user()->id;
-       
+
         $article->tags()->sync($tags);
 
         $article->update();
@@ -147,7 +136,7 @@ class ArticleController extends Controller
             'success'=>'Article has been update',
             'data' => ['article' => $article]
         ], 201);
-        
+
     }
 
     /**
@@ -156,9 +145,10 @@ class ArticleController extends Controller
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Article $article)
     {
-        $article = Article::find($id);
+        $this->authorize('delete', $article);
+
         $article->delete();
         return response()->json([
             'success'=>'Article has been delete',

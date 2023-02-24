@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Http\Requests\ArticleRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Mockery\Generator\Method;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -14,10 +16,47 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ArticleRequest $request)
     {
-        //
+        
+        if(empty($request->name)){
+            $articles =  DB::table('articles')
+                ->join('users', 'users.id', '=', 'articles.user_id')
+                ->join('categories', 'categories.id', '=', 'articles.category_id')
+                ->select(
+                        'articles.title',
+                        'articles.description',
+                        'articles.content',
+                        'users.name as user',
+                        'categories.name as category',
+                    )
+                ->get();
+
+                return response()->json($articles);
+        }else{
+            $articles =  DB::table('articles')
+                ->join('users', 'users.id', '=', 'articles.user_id')
+                ->join('categories', 'categories.id', '=', 'articles.category_id')
+                ->leftJoin('article_tag', 'article_tag.article_id' ,'=' ,'articles.id')
+                ->leftJoin('tags', 'tags.id' ,'=' ,'article_tag.tag_id')
+                ->select(
+                        'articles.title',
+                        'articles.description',
+                        'articles.content',
+                        'users.name as user',
+                        'categories.name as category',
+                        'tags.name as tags'
+                    )
+                // ->groupBy($request->name)
+                ->where('categories.name','like','%'.$request->name.'%')
+                ->orWhere('tags.name','like','%'.$request->name.'%')
+                ->get();
+
+                return response()->json($articles);
+        }
+       
     }
+    
 
     /**
      * Show the form for creating a new resource.

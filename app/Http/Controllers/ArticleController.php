@@ -16,8 +16,6 @@ class ArticleController extends Controller
     public function __construct()
     {
 
-        $this->authorizeResource(Article::class, ArticlePolicy::class);
-
         $this->middleware([
             'isUser'
         ])->only(['store']);
@@ -115,8 +113,9 @@ class ArticleController extends Controller
      */
     public function update(ArticleRequest $request, Article $article) // PUT PATCH
     {
+        $this->authorize('update', $article);
+        dd('article update authorize is work ');
 
-        // return response()->json();
         $arrayValider = $request->validated();
         $tags = $request->input('tags');
 
@@ -150,6 +149,9 @@ class ArticleController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('update', $id);
+        dd('article delete authorize is work ');
+
         $article = Article::find($id);
         $article->delete();
         return response()->json([

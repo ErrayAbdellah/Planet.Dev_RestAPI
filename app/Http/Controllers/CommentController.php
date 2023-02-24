@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Http\Requests\CommentRequest;
 use App\Policies\CommentPolicy;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CommentController extends Controller
 {
     public function __construct()
     {
-
-        $this->authorizeResource(Comment::class, CommentPolicy::class);
 
         $this->middleware([
             'isUser'
@@ -89,7 +88,8 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, Comment $comment)
     {
-        //
+        $this->authorize('update', $comment);
+        dd('is authorized'); // this line is only for testing, you can delete it abonnour.
     }
 
     /**
@@ -100,6 +100,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        $this->authorize('delete', $comment);
+        dd('is authorized'); // this line is only for testing, you can delete it abonnour.
     }
 }

@@ -3,12 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Models\Article;
 use App\Http\Requests\CommentRequest;
-use Illuminate\Http\Request;
+use App\Policies\CommentPolicy;
 
 class CommentController extends Controller
 {
+    public function __construct()
+    {
+
+        $this->authorizeResource(Comment::class, CommentPolicy::class);
+
+        $this->middleware([
+            'isUser'
+        ])->only(['store']);
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,9 +49,9 @@ class CommentController extends Controller
         $comment = new Comment;
         $comment->content = $request->content;
         $comment->article_id = $request->article_id;
-        $comment->user_id = $request->user_id; 
-        $comment->save();                                      
-        
+        $comment->user_id = $request->user_id;
+        $comment->save();
+
         return response()->json([
             'message' => 'Comment created successfully',
             'comment' => $comment,

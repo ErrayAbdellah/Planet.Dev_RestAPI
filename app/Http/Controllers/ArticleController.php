@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Http\Requests\ArticleRequest;
-use Mockery\Generator\Method;
+use App\Policies\ArticlePolicy;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ArticleController extends Controller
@@ -12,9 +12,13 @@ class ArticleController extends Controller
 
     public function __construct()
     {
+
+        $this->authorizeResource(Article::class, ArticlePolicy::class);
+
         $this->middleware([
             'isUser'
         ])->only(['store']);
+
     }
 
     /**

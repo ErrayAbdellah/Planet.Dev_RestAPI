@@ -40,6 +40,7 @@ class ArticleRequest extends FormRequest
                     'description'=>'required',
                     'content'=>'required',
                     'title'=>'required',
+                    'category_id' => 'required|integer|exists:categories,id',
                     // 'title'=>'required',
                     
                                 ];

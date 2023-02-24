@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
+use Exception;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => []]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,14 +32,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $credentials =['name'=>request('name')];
-        $categories = Category::create(
-            $credentials
-        );
-          if(!$categories){
-            return response()->json(['error'=>'not created']);
-          }
-          return response()->json(['message'=>'succsus'],200);
+
     }
 
     /**
@@ -42,7 +43,15 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        //
+
+        $credentials =['name'=>request('name')];
+        $categories = Category::create(
+            $credentials
+        );
+          if(!$categories){
+            return response()->json(['error'=>'not created']);
+          }
+          return response()->json(['message'=>'succsus'],200);
     }
 
     /**
@@ -65,6 +74,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         //
+
     }
 
     /**
@@ -76,7 +86,14 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
-        //
+    $category->name = $request->get('name');
+
+    $category->update();
+
+    return response()->json([
+        'success'=>'Article has been update',
+        'data' => ['article' => $category]
+    ], 201);
     }
 
     /**
@@ -87,6 +104,12 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $credentials = Category::find($category->id);
+        $categories = Category::where('id', $category->id)->delete($credentials);
+        if(!$categories){
+            return response()->json(['error'=>'not deleted']);
+        }
+        return response()->json(['message'=>'succsus'],200);
         //
     }
 }

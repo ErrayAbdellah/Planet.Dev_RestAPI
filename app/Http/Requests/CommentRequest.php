@@ -31,7 +31,7 @@ class CommentRequest extends FormRequest
             ];
             case 'PATCH':
             case 'PUT' : return [
-                // TODO implement this...
+                'content' => 'required'
             ];
             default : return [];
         }

@@ -90,6 +90,12 @@ class CommentController extends Controller
     {
         $this->authorize('update', $comment);
         dd('is authorized'); // this line is only for testing, you can delete it abonnour.
+        $comment->content = $request->content;
+        $comment->save();
+        return response()->json([
+            'message' => 'Comment updated successfully',
+            'comment' => $comment
+        ]);
     }
 
     /**
@@ -102,5 +108,12 @@ class CommentController extends Controller
     {
         $this->authorize('delete', $comment);
         dd('is authorized'); // this line is only for testing, you can delete it abonnour.
+        $comment = Comment::find($id);
+        // $comment->id = $request->comment_id;
+
+        $comment->delete();
+        return response()->json([
+            'message' => 'Comment deleted'
+        ]);
     }
 }

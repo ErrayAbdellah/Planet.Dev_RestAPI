@@ -55,12 +55,12 @@ class ArticleController extends Controller
                         'articles.description',
                         'articles.content',
                         'users.name as user',
-                        'categories.name as category',
-                        'tags.name as tags'
+                        'categories.name as category'
                     )
                 // ->groupBy($request->name)
                 ->where('categories.name','like','%'.$request->name.'%')
                 ->orWhere('tags.name','like','%'.$request->name.'%')
+                ->distinct()
                 ->get();
 
                 return response()->json($articles);
@@ -114,7 +114,6 @@ class ArticleController extends Controller
     public function update(ArticleRequest $request, Article $article) // PUT PATCH
     {
         $this->authorize('update', $article);
-        dd('article update authorize is work ');
 
         $arrayValider = $request->validated();
         $tags = $request->input('tags');
@@ -127,7 +126,6 @@ class ArticleController extends Controller
         $article->content = $request->get('content');
         $article->description = $request->get('description');
         $article->title = $request->get('title');
-        $article->user_id = JWTAuth::user()->id;
 
         $article->tags()->sync($tags);
 
@@ -147,12 +145,10 @@ class ArticleController extends Controller
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Article $article)
     {
-        $this->authorize('update', $id);
-        dd('article delete authorize is work ');
+        $this->authorize('delete', $article);
 
-        $article = Article::find($id);
         $article->delete();
         return response()->json([
             'success'=>'Article has been delete',

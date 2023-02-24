@@ -41,7 +41,7 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
         $data =[];
 
@@ -55,7 +55,7 @@ class UserController extends Controller
             $data['email']= $request->input('email');
         }
 
-        $user->id = JWTAuth::user()->id;
+        $user = JWTAuth::user();
 
          try {
             $user->where('id', $user->id)->update($data);
@@ -67,7 +67,7 @@ class UserController extends Controller
 
         return response()->json([
             'success'=>'user has been update',
-            'data' => ['user' => $user]
+            'data' => ['user' => User::find($user->id)]
         ], 201);
     }
 

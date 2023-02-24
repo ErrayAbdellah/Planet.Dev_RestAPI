@@ -35,14 +35,13 @@ class ArticleRequest extends FormRequest
                 ];
             case 'PATCH':
                 case 'PUT' : return [
-                    // TODO implement this...
-                    // 'name'=>'required',
                     'description'=>'required',
                     'content'=>'required',
                     'title'=>'required',
                     'category_id' => 'required|integer|exists:categories,id',
-                    // 'title'=>'required',
-                    
+                    'tags' => 'array',
+                    'tags.*' => 'integer|exists:tags,id',
+
                                 ];
             default : return [];
         }

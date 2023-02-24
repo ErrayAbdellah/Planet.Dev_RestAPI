@@ -89,7 +89,7 @@ class CommentController extends Controller
     public function update(CommentRequest $request, Comment $comment)
     {
         $this->authorize('update', $comment);
-        dd('is authorized'); // this line is only for testing, you can delete it abonnour.
+
         $comment->content = $request->content;
         $comment->save();
         return response()->json([
@@ -107,9 +107,6 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         $this->authorize('delete', $comment);
-        dd('is authorized'); // this line is only for testing, you can delete it abonnour.
-        $comment = Comment::find($id);
-        // $comment->id = $request->comment_id;
 
         $comment->delete();
         return response()->json([

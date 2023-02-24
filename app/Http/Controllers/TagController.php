@@ -10,7 +10,7 @@ class TagController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => []]);
+        $this->middleware(['auth:api', 'isAdmin']);
     }
 
     /**
@@ -46,9 +46,9 @@ class TagController extends Controller
             $tag
         );
           if(!$tag){
-            return response()->json(['error'=>'not created']);
+            return response()->json(['error'=>'not created'], 403);
           }
-          return response()->json(['message'=>'success'],200);
+          return response()->json(['message'=>'success'],201);
     }
 
     /**

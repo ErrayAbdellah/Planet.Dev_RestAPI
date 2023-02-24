@@ -8,7 +8,16 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
-
+    
+/**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login','register','forget','reset','test']]);
+    }
 
     /**
      * Display the specified resource.

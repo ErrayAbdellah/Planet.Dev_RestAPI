@@ -13,6 +13,7 @@ class Tag extends Model
         'name',
     ];
 
+    protected $hidden =['pivot'];
 
     public function articles(){
         return $this->belongsToMany(Article::class, 'article_tag');

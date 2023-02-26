@@ -30,43 +30,71 @@ class ArticleController extends Controller
     public function index(ArticleRequest $request)
     {
 
-        if(empty($request->name)){
-            $articles =  DB::table('articles')
-                ->join('users', 'users.id', '=', 'articles.user_id')
-                ->join('categories', 'categories.id', '=', 'articles.category_id')
-                ->select(
-                        'articles.title',
-                        'articles.description',
-                        'articles.content',
-                        'users.name as user',
-                        'categories.name as category',
-                    )
-                ->get();
+        // if(empty($request->name)){
+        //     $articles =  DB::table('articles')
+        //         ->join('users', 'users.id', '=', 'articles.user_id')
+        //         ->join('categories', 'categories.id', '=', 'articles.category_id')
+        //         ->select(
+        //                 'articles.title',
+        //                 'articles.description',
+        //                 'articles.content',
+        //                 'users.name as user',
+        //                 'categories.name as category',
+        //             )
+        //         ->get();
 
-                return response()->json($articles);
-        }else{
-            $articles =  DB::table('articles')
-                ->join('users', 'users.id', '=', 'articles.user_id')
-                ->join('categories', 'categories.id', '=', 'articles.category_id')
-                ->leftJoin('article_tag', 'article_tag.article_id' ,'=' ,'articles.id')
-                ->leftJoin('tags', 'tags.id' ,'=' ,'article_tag.tag_id')
-                ->select(
-                        'articles.title',
-                        'articles.description',
-                        'articles.content',
-                        'users.name as user',
-                        'categories.name as category'
-                    )
-                // ->groupBy($request->name)
-                ->where('categories.name','like','%'.$request->name.'%')
-                ->orWhere('tags.name','like','%'.$request->name.'%')
-                ->distinct()
-                ->get();
+        //         return response()->json($articles);
+        // }else{
+        //     $articles =  DB::table('articles')
+        //         ->join('users', 'users.id', '=', 'articles.user_id')
+        //         ->join('categories', 'categories.id', '=', 'articles.category_id')
+        //         ->leftJoin('article_tag', 'article_tag.article_id' ,'=' ,'articles.id')
+        //         ->leftJoin('tags', 'tags.id' ,'=' ,'article_tag.tag_id')
+        //         ->select(
+        //                 'articles.title',
+        //                 'articles.description',
+        //                 'articles.content',
+        //                 'users.name as user',
+        //                 'categories.name as category'
+        //             )
+        //         // ->groupBy($request->name)
+        //         ->where('categories.name','like','%'.$request->name.'%')
+        //         ->orWhere('tags.name','like','%'.$request->name.'%')
+        //         ->distinct()
+        //         ->get();
 
-                return response()->json($articles);
+        // $articles = DB::table('articles')
+        // ->join('users', 'users.id', '=', 'articles.user_id')
+        // ->join('categories', 'categories.id', '=', 'articles.category_id')
+        // ->leftJoin('article_tag', 'article_tag.article_id' ,'=' ,'articles.id')
+        // ->leftJoin('tags', 'tags.id' ,'=' ,'article_tag.tag_id')
+        // ->select(
+        //         'articles.title',
+        //         'articles.description',
+        //         'articles.content',
+        //         'users.name as user',
+        //         'categories.name as category',
+        //         'tags.name as tags'
+        //     )
+        // ->distinct();
+        
+        // if ($request->has('category')) {
+        // $articles = $articles->where('categories.name', 'like', '%' . $request->category . '%');
+        // }
+
+        // if ($request->has('tag')) {
+        // $articles = $articles->where('tags.name', 'like', '%' . $request->tag . '%');
+        // }
+                
+        // $articles = $articles->get();
+
+        $articles = Article::with(['tags'=>function($tag){
+            $tag->select('name');
+         }])->get();
+         return response()->json($articles);
         }
 
-    }
+
 
 
 

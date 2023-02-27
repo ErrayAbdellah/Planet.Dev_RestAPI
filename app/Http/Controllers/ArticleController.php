@@ -29,41 +29,18 @@ class ArticleController extends Controller
      */
     public function index(ArticleRequest $request)
     {
-
-        // if(empty($request->search)){
-
-            $articles = Article::with(
-                ['category'=>function($category){
-                    $category->select('name','');
-                }]
-             )->get();
-           
-                return response()->json($articles);
-        // }else{
-        //         $articles = Article::with(['tags'=>function($tag){
-        //         $tag->select('name');
-        //         }])->with('categories')
-        //         ->where('category_id','like','%'.$request->name.'%');
-        //         // ->orWhere('tags.name','like','%'.$request->name.'%')->get();
-        
-        //         return response()->json($articles);
-        
-        // }
-        // $articles = Article::with(['tags' => function($tag) {
-        //     $tag->select('name');
-        // }]);
-        
-        // if(empty($request->search)) {
-        //     $articles = $articles->get();
-        //     return response()->json($articles);
-        // } else {
-        //     $articles = $articles->where('category_id', 'like', '%'.$request->name.'%')
-        //                         //  ->orWhere('article_tag', 'like', '%'.$request->name.'%')
-        //                          ->get();
-        //     return response()->json($articles);
-        // }
-       
-        
+        $articles = Article::with('tags', 'category')
+        ->where(function ($query) use ($request) {
+            $query->whereHas('tags', function ($query) use ($request) {
+                $query->where('name', 'like', '%'.$request->name.'%');
+            })
+            ->orWhereHas('category', function ($query) use ($request) {
+                $query->where('name', 'like', '%'.$request->name.'%');
+            });
+        })
+        ->get();
+    
+        return response()->json($articles);
     }
 
 

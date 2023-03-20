@@ -136,15 +136,15 @@ class AuthController extends Controller
             'email' => $email, 
             'token' => $token, 
             'created_at' => Carbon::now()
-          ]);
-        
+        ]);
+        //1 : view - 2 : wlh ma39alt
         Mail::send([], [], function($message) use($email,$token){
             $message->to($email);
             $message->subject('Reset Password');
             $message->text(
                 "please click on the link below to reset your password. \n
                 http://localhost:8000/api/password/reset?email=".$email."&token=".$token
-                             );
+                            );
         });
         
         return response()->json(['message' => "reset email has been sent successfully"],200);

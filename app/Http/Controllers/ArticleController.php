@@ -90,7 +90,6 @@ class ArticleController extends Controller
     {
         $this->authorize('update', $article);
 
-        $arrayValider = $request->validated();
         $tags = $request->input('tags');
 
         if(! $user = JWTAuth::user()) {
